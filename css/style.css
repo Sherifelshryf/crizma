@@ -85,7 +85,7 @@ a {
 }
 
 .logo img {
-  height: 68px;
+  height: 45px;
   object-fit: contain;
 }
 
@@ -176,10 +176,10 @@ a {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   overflow: hidden;
-  padding: 30vh 5% 0;
+  padding: 80px 5% 20px;
 }
 
 .hero-bg {
@@ -228,7 +228,8 @@ a {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 2rem;
+  gap: 1.5rem;
+  margin-top: 5vh;
 }
 
 .hero-part {
@@ -282,7 +283,7 @@ a {
   width: 100vw;
   max-width: 1000px;
   overflow: hidden;
-  margin-top: 3rem;
+  margin-top: 1.5rem;
   position: relative;
   mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
