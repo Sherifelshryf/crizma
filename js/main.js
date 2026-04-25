@@ -71,6 +71,32 @@ document.addEventListener('DOMContentLoaded', () => {
     observer.observe(element);
   });
 
+  // --- Hero Sticky Scroll Logic ---
+  const heroScrollContainer = document.querySelector('.hero-scroll-container');
+  const part2 = document.querySelector('.hero-part.part-2');
+  const part3 = document.querySelector('.hero-part.part-3');
+
+  if (heroScrollContainer && part2 && part3) {
+    window.addEventListener('scroll', () => {
+      const rect = heroScrollContainer.getBoundingClientRect();
+      const scrolled = -rect.top;
+      
+      // Part 2 pops up after scrolling 30vh
+      if (scrolled > window.innerHeight * 0.3) {
+        part2.classList.add('visible');
+      } else {
+        part2.classList.remove('visible');
+      }
+
+      // Part 3 pops up after scrolling 80vh
+      if (scrolled > window.innerHeight * 0.8) {
+        part3.classList.add('visible');
+      } else {
+        part3.classList.remove('visible');
+      }
+    });
+  }
+
   // --- 4. ClickSpark Button Animations ---
   // A premium micro-interaction for buttons (Antigravity aesthetic)
   const buttons = document.querySelectorAll('.btn');
