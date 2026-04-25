@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crizma Med Supply | Get Hired</title>
+    <meta name="description" content="Apply to join the Crizma team and help us put the health technology in the world at our clients' fingertips.">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .page-header {
+            padding: 12rem 5% 4rem;
+            text-align: center;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 4rem auto 8rem;
+        }
+        
+        .get-hired-form {
+            background: var(--glass-card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        .get-hired-form .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .get-hired-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .get-hired-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar scrolled">
+        <a href="index.html" class="logo">
+            <img src="images/logo.png" alt="Crizma Logo">
+        </a>
+        <div class="nav-links">
+            <a href="index.html#services">Services</a>
+            <a href="index.html#about">About</a>
+            <a href="index.html#portfolio">Portfolio</a>
+            <a href="index.html#team">Team</a>
+            <a href="index.html#find-us">Find Us</a>
+            <a href="index.html#contact">Contact</a>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <a href="get-hired.html" class="btn btn-outline">Get Hired</a>
+            <a href="index.html#contact" class="btn btn-primary">Hire Us</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="fade-up stagger-1">
+            <span class="super" style="color: var(--brand-red); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem; display: block;">Join Our Team</span>
+            <h1 style="font-size: 3.5rem; color: var(--text-primary);">Get Hired by Crizma</h1>
+            <p style="color: var(--text-secondary); font-size: 1.2rem; margin-top: 1rem; max-width: 600px; margin-left: auto; margin-right: auto;">Fill out the form below with your details and we will get back to you shortly.</p>
+        </div>
+    </header>
+
+    <!-- Application Form -->
+    <section>
+        <div class="form-container fade-up stagger-2">
+            <form class="get-hired-form contact-form" onsubmit="event.preventDefault(); alert('Application submitted successfully! We will contact you soon.');">
+                
+                <div class="input-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email address" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="Enter your phone number" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="position">Position Applied For</label>
+                    <input type="text" id="position" placeholder="E.g. Support Engineer, Medical Consultant" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="coverLetter">Cover Letter / Additional Details</label>
+                    <textarea id="coverLetter" placeholder="Tell us why you would be a great fit for Crizma..." required></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Submit Application</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Contact Section & Footer -->
+    <footer id="contact">
+        <div class="footer-grid">
+            <div class="footer-col fade-up stagger-1">
+                <h4>Crizma Med Supply</h4>
+                <ul>
+                    <li><a href="tel:0220820258">Cairo: 0220820258</a></li>
+                    <li><a href="tel:01000032085">Phone: 01000032085</a></li>
+                    <li><a href="tel:01007756065">Mansoura: 01007756065</a></li>
+                    <li><a href="mailto:info@crizma.com">info@crizma.com</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col fade-up stagger-2">
+                <h4>Newsletter</h4>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">Sign up for updates and exclusive offers on premium health tech.</p>
+                <form class="contact-form" onsubmit="event.preventDefault(); alert('Subscribed to Crizma Newsletter!');">
+                    <div class="input-group">
+                        <input type="email" placeholder="Your Email Address" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
+            </div>
+
+            <div class="footer-col fade-up stagger-3">
+                <h4>Social Links</h4>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="#" class="simulate-alert" title="Facebook">FB</a>
+                    <a href="#" class="simulate-alert" title="Twitter">TW</a>
+                    <a href="#" class="simulate-alert" title="LinkedIn">IN</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom fade-up stagger-4">
+            &copy; 2026 Crizma Med Supply. All Rights Reserved. (Built with Antigravity Theme)
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+</html>

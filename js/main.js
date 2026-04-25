@@ -1,28 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // --- 0. Theme Toggle Logic ---
-  const themeToggle = document.getElementById('theme-toggle');
-  
-  // Check for saved theme preference or use system preference
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme) {
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    // Optional: default to dark if user system prefers dark
-    // For this request, user wanted light as default, so we'll just respect the user preference
-    // document.documentElement.setAttribute('data-theme', 'dark');
-    // themeToggle.textContent = '☀️';
-  }
-
-  themeToggle.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-  });
-
   // --- 1. Glassmorphism Navbar Scroll Effect ---
   const navbar = document.querySelector('.navbar');
   
