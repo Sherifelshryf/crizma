@@ -326,43 +326,26 @@
         var mouse = { x: -9999, y: -9999, prevX: -9999, prevY: -9999, speed: 0 };
         var w = 0, h = 0, engagement = 0;
 
-        // Cached rects of elements that should be dot-free
+        // Elements that should never show dots
         var excludeEls = [];
         var excludeRects = [];
-        var PAD = 0; // no border — exclusion matches element bounds exactly
 
         function cacheExcludeRects() {
           excludeRects = excludeEls.map(function(el) {
             var r = el.getBoundingClientRect();
-            return {
-              left:   r.left   - PAD,
-              top:    r.top    - PAD,
-              width:  r.width  + PAD * 2,
-              height: r.height + PAD * 2
-            };
+            return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, w: r.width, h: r.height };
           });
         }
 
-        var EXCLUDE_SEL = [
-          '.navbar',           // top bar
-          '.hero-content',     // hero text / buttons / marquee
-          '.glass-card',       // service & team cards
-          '.section-header',   // section headings
-          '.sponsors-marquee', // logo strips
-          'iframe',            // embedded map
-          'footer',            // contact / footer
-          '.btn',              // buttons
-          'section > *',       // direct children of sections not already covered
-        ].join(',');
-
         function initExcludes() {
-          excludeEls = Array.from(document.querySelectorAll(EXCLUDE_SEL));
+          excludeEls = Array.from(document.querySelectorAll('.navbar, .glass-card, iframe'));
           cacheExcludeRects();
         }
 
         window.addEventListener('scroll', cacheExcludeRects, { passive: true });
-        window.addEventListener('resize', function() { initExcludes(); }, { passive: true });
+        window.addEventListener('resize', initExcludes, { passive: true });
         setTimeout(initExcludes, 0);
+
 
         function resize() {
           w = window.innerWidth;
@@ -470,13 +453,13 @@
           ctx.fillStyle = rev;
           ctx.fillRect(0, 0, w, h);
 
-          // Erase dots over content elements — keeps background-only appearance
+          // Erase dots over excluded elements
           ctx.globalCompositeOperation = 'destination-out';
           ctx.fillStyle = 'rgba(0,0,0,1)';
           for (var ri = 0; ri < excludeRects.length; ri++) {
             var r = excludeRects[ri];
-            if (r.top + r.height > 0 && r.top < h) {
-              ctx.fillRect(r.left, r.top, r.width, r.height);
+            if (r.bottom > 0 && r.top < h) {
+              ctx.fillRect(r.left, r.top, r.w, r.h);
             }
           }
 
