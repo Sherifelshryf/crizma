@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
+      /* ── Dot canvas: desktop/mouse only ── */
+      @media (hover: none), (pointer: coarse) {
+        canvas { display: none !important; }
+      }
+
       /* ── Prevent I-beam cursor site-wide ── */
       * { cursor: default !important; }
       a, button, .btn, label, select,
@@ -320,8 +325,8 @@
     <script>
       // ── Red dot cursor field ──
       (function () {
-        // Skip on touch-only devices — no mouse cursor to follow
-        if (window.matchMedia('(hover: none)').matches) return;
+        // Only run on devices with a real mouse (hover + fine pointer)
+        if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
         var canvas = document.createElement('canvas');
         canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;';
