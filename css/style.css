@@ -697,7 +697,7 @@ footer {
   .hero-content { gap: 1.2rem; margin-top: 0; }
 
   /* Marquee */
-  .marquee-track img { height: 45px; }
+  .marquee-track img { height: 74px; }
   .marquee-track { gap: 2.5rem; }
 
   /* Sections */
@@ -723,5 +723,5 @@ footer {
   .hero-part h1 { font-size: 1.9rem; }
   .section-header h2 { font-size: 1.7rem; }
   .glass-card { padding: 1.4rem; }
-  .marquee-track img { height: 36px; }
+  .marquee-track img { height: 59px; }
 }
