@@ -10,6 +10,47 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+      /* ── Prevent I-beam cursor site-wide ── */
+      * { cursor: default !important; }
+      a, button, .btn, label, select,
+      input[type="submit"], input[type="button"] { cursor: pointer !important; }
+      input[type="text"], input[type="email"],
+      input[type="password"], textarea { cursor: text !important; }
+
+      /* ── Scroll-reveal base states ── */
+      .fade-up {
+        opacity: 0;
+        transform: translateY(36px);
+        transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .fade-up.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Hero parts */
+      .hero-part {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .hero-part.part-1,
+      .hero-part.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Stagger delays */
+      .stagger-1 { transition-delay: 0.08s; }
+      .stagger-2 { transition-delay: 0.16s; }
+      .stagger-3 { transition-delay: 0.24s; }
+      .stagger-4 { transition-delay: 0.32s; }
+
+    </style>
 </head>
 
 <body>
@@ -36,9 +77,7 @@
     <!-- Hero Section -->
     <div class="hero-scroll-container">
         <div class="hero-sticky">
-            <!-- Dynamic Background -->
             <div class="hero-bg"></div>
-
             <div class="hero-content">
                 <!-- Part 1 -->
                 <div class="hero-part part-1 visible">
@@ -260,6 +299,235 @@
 
     <!-- JavaScript -->
     <script src="js/main.js"></script>
+
+    <script>
+      // ── Red dot cursor field ──
+      (function () {
+        var canvas = document.createElement('canvas');
+        canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;';
+        document.body.appendChild(canvas);
+
+        var ctx = canvas.getContext('2d', { alpha: true });
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var TWO_PI = Math.PI * 2;
+
+        var cfg = {
+          dotRadius:    3,
+          dotSpacing:   14,
+          revealRadius: 190,
+          bulgeStrength: 130,
+          innerRadius:  52,
+          cursorRadius:  400,
+          colorA: 'rgba(183, 50, 53, 0.95)',
+          colorB: 'rgba(209, 58, 62, 0.80)',
+        };
+
+        var dots = [];
+        var mouse = { x: -9999, y: -9999, prevX: -9999, prevY: -9999, speed: 0 };
+        var w = 0, h = 0, engagement = 0;
+
+        // Cached rects of elements that should be dot-free
+        var excludeEls = [];
+        var excludeRects = [];
+        var PAD = 0; // no border — exclusion matches element bounds exactly
+
+        function cacheExcludeRects() {
+          excludeRects = excludeEls.map(function(el) {
+            var r = el.getBoundingClientRect();
+            return {
+              left:   r.left   - PAD,
+              top:    r.top    - PAD,
+              width:  r.width  + PAD * 2,
+              height: r.height + PAD * 2
+            };
+          });
+        }
+
+        var EXCLUDE_SEL = [
+          '.navbar',           // top bar
+          '.hero-content',     // hero text / buttons / marquee
+          '.glass-card',       // service & team cards
+          '.section-header',   // section headings
+          '.sponsors-marquee', // logo strips
+          'iframe',            // embedded map
+          'footer',            // contact / footer
+          '.btn',              // buttons
+          'section > *',       // direct children of sections not already covered
+        ].join(',');
+
+        function initExcludes() {
+          excludeEls = Array.from(document.querySelectorAll(EXCLUDE_SEL));
+          cacheExcludeRects();
+        }
+
+        window.addEventListener('scroll', cacheExcludeRects, { passive: true });
+        window.addEventListener('resize', function() { initExcludes(); }, { passive: true });
+        setTimeout(initExcludes, 0);
+
+        function resize() {
+          w = window.innerWidth;
+          h = window.innerHeight;
+          canvas.width  = w * dpr;
+          canvas.height = h * dpr;
+          canvas.style.width  = w + 'px';
+          canvas.style.height = h + 'px';
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          buildDots();
+        }
+
+        function buildDots() {
+          var step = cfg.dotRadius + cfg.dotSpacing;
+          var cols = Math.floor(w / step);
+          var rows = Math.floor(h / step);
+          var padX = (w % step) / 2;
+          var padY = (h % step) / 2;
+          dots = [];
+          for (var r = 0; r < rows; r++) {
+            for (var c = 0; c < cols; c++) {
+              var ax = padX + c * step + step / 2;
+              var ay = padY + r * step + step / 2;
+              dots.push({ ax: ax, ay: ay, sx: ax, sy: ay });
+            }
+          }
+        }
+
+        window.addEventListener('mousemove', function (e) {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+        }, { passive: true });
+
+        setInterval(function () {
+          var dx = mouse.prevX - mouse.x;
+          var dy = mouse.prevY - mouse.y;
+          var d  = Math.sqrt(dx * dx + dy * dy);
+          mouse.speed += (d - mouse.speed) * 0.5;
+          if (mouse.speed < 0.001) mouse.speed = 0;
+          mouse.prevX = mouse.x;
+          mouse.prevY = mouse.y;
+        }, 20);
+
+        function tick() {
+          var len   = dots.length;
+          var crSq  = cfg.cursorRadius * cfg.cursorRadius;
+          var rad   = cfg.dotRadius / 2;
+
+          var targetEng = Math.min(mouse.speed / 5, 1);
+          engagement += (targetEng - engagement) * 0.06;
+          if (engagement < 0.001) engagement = 0;
+          // Always keep a baseline push so there's empty space even when still
+          var eff = Math.max(engagement, mouse.x > -100 ? 0.35 : 0);
+
+          ctx.clearRect(0, 0, w, h);
+
+          var grad = ctx.createLinearGradient(0, 0, w, h);
+          grad.addColorStop(0, cfg.colorA);
+          grad.addColorStop(1, cfg.colorB);
+          ctx.fillStyle = grad;
+
+          ctx.beginPath();
+          for (var i = 0; i < len; i++) {
+            var d  = dots[i];
+            var dx = mouse.x - d.ax;
+            var dy = mouse.y - d.ay;
+            var dSq = dx * dx + dy * dy;
+
+            if (dSq < crSq && eff > 0.01) {
+              var dist  = Math.sqrt(dSq);
+              var t     = 1 - dist / cfg.cursorRadius;
+              var push  = t * t * cfg.bulgeStrength * eff;
+              var angle = Math.atan2(dy, dx);
+              d.sx += (d.ax - Math.cos(angle) * push - d.sx) * 0.15;
+              d.sy += (d.ay - Math.sin(angle) * push - d.sy) * 0.15;
+            } else {
+              d.sx += (d.ax - d.sx) * 0.1;
+              d.sy += (d.ay - d.sy) * 0.1;
+            }
+
+            // Hard circular boundary — forces a perfect circle regardless of grid alignment
+            if (mouse.x > -500) {
+              var ex = d.sx - mouse.x;
+              var ey = d.sy - mouse.y;
+              var ed = ex * ex + ey * ey;
+              var ir = cfg.innerRadius;
+              if (ed < ir * ir && ed > 0) {
+                var em = Math.sqrt(ed);
+                d.sx = mouse.x + (ex / em) * ir;
+                d.sy = mouse.y + (ey / em) * ir;
+              }
+            }
+
+            ctx.moveTo(d.sx + rad, d.sy);
+            ctx.arc(d.sx, d.sy, rad, 0, TWO_PI);
+          }
+          ctx.fill();
+
+          // Reveal mask — only show dots within revealRadius of cursor
+          var rev = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, cfg.revealRadius);
+          rev.addColorStop(0,    'rgba(0,0,0,1)');
+          rev.addColorStop(0.55, 'rgba(0,0,0,0.9)');
+          rev.addColorStop(1,    'rgba(0,0,0,0)');
+          ctx.globalCompositeOperation = 'destination-in';
+          ctx.fillStyle = rev;
+          ctx.fillRect(0, 0, w, h);
+
+          // Erase dots over content elements — keeps background-only appearance
+          ctx.globalCompositeOperation = 'destination-out';
+          ctx.fillStyle = 'rgba(0,0,0,1)';
+          for (var ri = 0; ri < excludeRects.length; ri++) {
+            var r = excludeRects[ri];
+            if (r.top + r.height > 0 && r.top < h) {
+              ctx.fillRect(r.left, r.top, r.width, r.height);
+            }
+          }
+
+          ctx.globalCompositeOperation = 'source-over';
+
+          requestAnimationFrame(tick);
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
+        requestAnimationFrame(tick);
+      })();
+    </script>
+
+    <script>
+      // ── Scroll-reveal observer ──
+      (function () {
+        var observer = new IntersectionObserver(function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll('.fade-up').forEach(function (el) {
+          observer.observe(el);
+        });
+
+        // Hero sticky reveal on scroll
+        var heroContainer = document.querySelector('.hero-scroll-container');
+        var part2 = document.querySelector('.hero-part.part-2');
+        var part3 = document.querySelector('.hero-part.part-3');
+
+        if (heroContainer && part2 && part3) {
+          window.addEventListener('scroll', function () {
+            var scrolled = -heroContainer.getBoundingClientRect().top;
+            var vh = window.innerHeight;
+            if (scrolled > vh * 0.25) part2.classList.add('visible');
+            if (scrolled > vh * 0.70) part3.classList.add('visible');
+            if (scrolled < vh * 0.10) {
+              part2.classList.remove('visible');
+              part3.classList.remove('visible');
+            } else if (scrolled < vh * 0.55) {
+              part3.classList.remove('visible');
+            }
+          }, { passive: true });
+        }
+      })();
+    </script>
 </body>
 
 </html>

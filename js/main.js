@@ -27,50 +27,57 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // --- 3. Intersection Observer for Fade-Up Animations ---
-  const observerOptions = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.15
-  };
-
-  const observer = new IntersectionObserver((entries, observer) => {
+  // --- 3. Intersection Observer for Scroll Animations ---
+  const observer = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
-        observer.unobserve(entry.target); // Stop observing once it's visible
+        obs.unobserve(entry.target);
       }
     });
-  }, observerOptions);
+  }, { threshold: 0.15 });
 
-  document.querySelectorAll('.fade-up').forEach(element => {
-    observer.observe(element);
+  document.querySelectorAll('.fade-up, .fade-left, .fade-right, .scale-up').forEach(el => {
+    observer.observe(el);
   });
 
-  // --- Hero Sticky Scroll Logic ---
+  // --- Hero Sticky Scroll Logic (smooth progress-based) ---
   const heroScrollContainer = document.querySelector('.hero-scroll-container');
   const part2 = document.querySelector('.hero-part.part-2');
   const part3 = document.querySelector('.hero-part.part-3');
 
   if (heroScrollContainer && part2 && part3) {
-    window.addEventListener('scroll', () => {
+    let ticking = false;
+
+    const updateHeroParts = () => {
       const rect = heroScrollContainer.getBoundingClientRect();
       const scrolled = -rect.top;
-      
-      // Part 2 pops up after scrolling 30vh
-      if (scrolled > window.innerHeight * 0.3) {
-        part2.classList.add('visible');
-      } else {
-        part2.classList.remove('visible');
-      }
+      const vh = window.innerHeight;
 
-      // Part 3 pops up after scrolling 80vh
-      if (scrolled > window.innerHeight * 0.8) {
+      // Smooth fade-in thresholds (no abrupt removal once shown)
+      if (scrolled > vh * 0.25) {
+        part2.classList.add('visible');
+      }
+      if (scrolled > vh * 0.7) {
         part3.classList.add('visible');
-      } else {
+      }
+      // Only hide when user scrolls well back up
+      if (scrolled < vh * 0.1) {
+        part2.classList.remove('visible');
+        part3.classList.remove('visible');
+      } else if (scrolled < vh * 0.55) {
         part3.classList.remove('visible');
       }
-    });
+
+      ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateHeroParts);
+        ticking = true;
+      }
+    }, { passive: true });
   }
 
   // --- 4. ClickSpark Button Animations ---
