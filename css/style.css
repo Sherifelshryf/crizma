@@ -725,3 +725,140 @@ footer {
   .glass-card { padding: 1.4rem; }
   .marquee-track img { height: 59px; }
 }
+
+/* ── About Section ── */
+.about-content {
+  max-width: 720px;
+  margin: 0 auto 4rem;
+  text-align: center;
+}
+
+.about-lead {
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  line-height: 1.8;
+  font-weight: 600;
+  margin-bottom: 1.75rem;
+}
+
+.about-body {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.9;
+  margin-bottom: 2.5rem;
+}
+
+.about-vision {
+  background: rgba(183, 50, 53, 0.05);
+  border: 1px solid rgba(183, 50, 53, 0.2);
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+}
+
+.about-vision .super {
+  color: var(--brand-red);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.about-vision p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+/* Reduce bottom padding so accordion doesn't float in a sea of whitespace */
+#services {
+  padding-bottom: 0;
+  border-top: 1px solid var(--glass-border);
+}
+
+/* ── Accordion Styles ── */
+.accordion-container {
+  border-top: 1px solid var(--glass-border);
+}
+
+/* Centered flex grid for 5-card layout (3 + 2 centered) */
+.grid-why {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.grid-why .glass-card {
+  flex: 0 1 320px;
+}
+
+.custom-accordion {
+  border-top: 1px solid var(--glass-border);
+  transition: var(--transition-smooth);
+}
+
+.custom-accordion:first-child {
+  border-top: none;
+}
+
+.custom-accordion summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 3rem 2rem;
+  user-select: none;
+}
+
+.custom-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.3rem;
+}
+
+.accordion-header .super {
+  color: var(--brand-red);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+}
+
+.accordion-header h2 {
+  font-size: 2.2rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.accordion-header .arrow {
+  font-size: 0.9rem;
+  color: var(--brand-red);
+  margin-top: 0.9rem;
+  transition: transform 0.3s ease;
+  display: block;
+}
+
+.custom-accordion[open] .accordion-header .arrow {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  padding: 0 2rem 3rem;
+  overflow: hidden;
+  transition: height 0.48s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.38s ease,
+              transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 768px) {
+  .about-lead { font-size: 1.15rem; }
+  .about-body { font-size: 1rem; }
+  .grid-why .glass-card { flex: 0 1 100%; }
+  .accordion-header h2 { font-size: 1.7rem; }
+  .custom-accordion summary { padding: 2rem 1rem; }
+}
